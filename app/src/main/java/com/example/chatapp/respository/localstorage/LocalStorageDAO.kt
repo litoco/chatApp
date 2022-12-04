@@ -1,0 +1,19 @@
+package com.example.chatapp.respository.localstorage
+
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
+
+@Dao
+interface LocalStorageDAO {
+    @Query("SELECT userId FROM Userid")
+    fun getUserId(): Flow<String>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertUserId(userId: UserId)
+
+    @Query("DELETE FROM UserId")
+    fun deleteUserDetails()
+}
