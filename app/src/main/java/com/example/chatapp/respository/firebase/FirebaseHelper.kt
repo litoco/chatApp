@@ -1,46 +1,60 @@
 package com.example.chatapp.respository.firebase
 
+import android.util.Log
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.channels.ProducerScope
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.tasks.await
 
 class FirebaseHelper {
 
     private val firebaseFireStore = Firebase.firestore
 
-    fun getUserId(): Flow<String> = callbackFlow {
-        trySend("Signing in..")
+    fun getUserID() = flow {
 
-        val firebaseAuth = Firebase.auth
-        firebaseAuth.signInAnonymously().addOnCompleteListener{ authResult ->
-            if (authResult.isSuccessful){
-                if (firebaseAuth.currentUser != null) {
-                    trySend("Creating profile..")
-                    createUserProfile(firebaseAuth.currentUser!!.uid, this)
-                } else {
-                    trySend("Some problem occurred while performing signIn")
+        emit("Contacting server..")
+        try {
+            val signInTask = Firebase.auth.signInAnonymously().await()
+            if (signInTask.user != null && signInTask.user!!.uid.isNotEmpty()){
+                emit("Connection successful\nCreating profile, please wait...")
+                kotlinx.coroutines.delay(10000)
+                createUserProfile(signInTask.user!!.uid).collect{
+                    Log.e("FirebaseHelper", "getUserId: it is $it ${it == "Failed"} ${signInTask.user!!.uid}")
+                    if (it == "Failed"){
+                        emit("Profile creation failed!!")
+                    } else {
+                        emit(signInTask.user!!.uid)
+                    }
                 }
             } else {
-                trySend("Failed to signIn")
+                emit("SignIn failed, please retry")
             }
+        } catch (e: Exception){
+            emit("Can't connect to the server\nPlease check your internet connection and retry")
         }
-        awaitClose {this.cancel()}
     }
 
-    private fun createUserProfile(currentUserId: String, producerScope: ProducerScope<String>){
+
+    private fun createUserProfile(currentUserId: String) = flow {
         val string =
-            "New device ${android.os.Build.MANUFACTURER} ${android.os.Build.PRODUCT} connected"
+            "New device ${android.os.Build.MANUFACTURER} ${android.os.Build.PRODUCT} connected here"
         val data = hashMapOf(
             "UserDetails" to string
         )
 
-        firebaseFireStore.collection("users").document(currentUserId).set(data).addOnCompleteListener{ userProfileCreationTask ->
-            producerScope.trySend(if (userProfileCreationTask.isSuccessful) {currentUserId} else {"Failed to create profile, please retry"})
+        try {
+            val task = firebaseFireStore.collection("users").document(currentUserId).set(data)
+            kotlinx.coroutines.withTimeout(5000){
+                task.await()
+            }
+            if (task.isSuccessful){
+                emit("Success")
+            } else {
+                emit("Failed")
+            }
+        } catch (e: Exception){
+            emit("Failed")
         }
     }
 }
