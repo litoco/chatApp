@@ -13,14 +13,14 @@ class Repository(private val userDetailsDAO: LocalStorageDAO) {
 
     fun getUserID(): Flow<String> = flow {
         val userIdFromLocalStorageFlow = userDetailsDAO.getUserId()
-        userIdFromLocalStorageFlow.collect{ userIdFromLocalStorage ->
-            if (userIdFromLocalStorage.isNullOrEmpty()){
+        userIdFromLocalStorageFlow.collect { userIdFromLocalStorage ->
+            if (userIdFromLocalStorage.isNullOrEmpty()) {
                 emit("Performing signIn, please wait..")
-                firebaseHelperClass.getUserID().collect{ messageFromFirebase ->
+                firebaseHelperClass.getUserID().collect { messageFromFirebase ->
                     if (messageFromFirebase.split(" ").size == 1 && messageFromFirebase.split(" ")[0].isNotEmpty()) {
                         storeUserIdLocally(messageFromFirebase)
                         emit("Account creation successful")
-                    } else{
+                    } else {
                         emit(messageFromFirebase)
                     }
                 }
