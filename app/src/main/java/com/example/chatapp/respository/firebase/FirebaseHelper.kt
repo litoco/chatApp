@@ -17,7 +17,6 @@ class FirebaseHelper {
             val signInTask = Firebase.auth.signInAnonymously().await()
             if (signInTask.user != null && signInTask.user!!.uid.isNotEmpty()) {
                 emit("Connection successful\nCreating profile, please wait...")
-                kotlinx.coroutines.delay(10000)
                 createUserProfile(signInTask.user!!.uid).collect {
                     if (it == "Failed") {
                         emit("Profile creation failed!!")
