@@ -18,21 +18,15 @@ class Repository(private val userDetailsDAO: LocalStorageDAO) {
         userIdFromLocalStorageFlow.collect{ userIdFromLocalStorage ->
             if (userIdFromLocalStorage.isNullOrEmpty()){
                 // send display message
-                emit("Creating your profile, please wait..")
-
-                firebaseHelperClass.getUserID().collect{ messageFromFirebase ->
-                    if (messageFromFirebase.isNotEmpty()){
-                        if (messageFromFirebase.split(" ").size == 1 && messageFromFirebase.split(" ")[0].isNotEmpty()) {
-                            storeUserIdLocally(messageFromFirebase)
-                            // send display message
-                            emit("Account creation successful")
-                        } else{
-                            // send display message
-                            emit(messageFromFirebase)
-                        }
-                    } else {
+                emit("Performing signIn, please wait..")
+                firebaseHelperClass.getUserId().collect{ messageFromFirebase ->
+                    if (messageFromFirebase.split(" ").size == 1 && messageFromFirebase.split(" ")[0].isNotEmpty()) {
+                        storeUserIdLocally(messageFromFirebase)
                         // send display message
-                        emit("Some unknown error occurred, please retry..")
+                        emit("Account creation successful")
+                    } else{
+                        // send display message
+                        emit(messageFromFirebase)
                     }
                 }
             } else {
@@ -40,8 +34,6 @@ class Repository(private val userDetailsDAO: LocalStorageDAO) {
                 emit("Account creation successful")
             }
         }
-    }.catch {
-        Log.e("TAG", "getUserID: Repository error $this")
     }
 
     @WorkerThread

@@ -30,11 +30,11 @@ fun AppsScreen(
     // UI Data store
     viewModel: AppViewModel = viewModel()
 ) {
-    var buttonText by rememberSaveable{ mutableStateOf("Start") }
+    var buttonText by rememberSaveable{ mutableStateOf("SignIn") }
     val text = viewModel.displayMessageState
     val buttonClickBehaviour = {
         viewModel.getUserId()
-        buttonText = "Retry"
+        buttonText = "Retry SignIn"
     }
     ShowMainScreen(text = text, buttonText, buttonClickBehaviour)
     if (text == "Account creation successful"){
