@@ -12,8 +12,7 @@ class Repository(private val userDetailsDAO: LocalStorageDAO) {
     private val firebaseHelperClass = FirebaseHelper()
 
     fun getUserID(): Flow<String> = flow {
-        val userIdFromLocalStorageFlow = userDetailsDAO.getUserId()
-        userIdFromLocalStorageFlow.collect { userIdFromLocalStorage ->
+        userDetailsDAO.getUserId().collect { userIdFromLocalStorage ->
             if (userIdFromLocalStorage.isNullOrEmpty()) {
                 emit("Performing signIn, please wait..")
                 firebaseHelperClass.getUserID().collect { messageFromFirebase ->
