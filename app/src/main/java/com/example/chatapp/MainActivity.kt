@@ -34,7 +34,10 @@ fun SplashScreen(
     Surface (
         modifier = Modifier.fillMaxSize(1f).background(MaterialTheme.colorScheme.background)
             ) {
+        // App logo
+        // Progress bar
         var isSignedIn by remember{ mutableStateOf(viewModel.getSignInStatus()) }
+        // close progress bar
         if (isSignedIn){
             ShowUI()
         } else {

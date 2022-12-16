@@ -4,11 +4,12 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.example.chatapp.models.AllChatsModel
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface LocalStorageDAO {
-    @Query("SELECT userId FROM Userid")
+    @Query("SELECT userId FROM UserId")
     fun getUserId(): Flow<String>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -16,4 +17,10 @@ interface LocalStorageDAO {
 
     @Query("DELETE FROM UserId")
     fun deleteUserDetails()
+
+    @Query("SELECT * FROM AllChats")
+    fun getAllChats(): Flow<List<AllChatsModel>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertChatMetaData(chatsMetaData: ChatsMetaData)
 }

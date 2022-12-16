@@ -5,9 +5,9 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [UserId::class], version = 1)
+@Database(entities = [UserId::class, ChatsMetaData::class], version = 2)
 abstract class AppDatabase: RoomDatabase() {
-    abstract fun userDetailsDAO(): LocalStorageDAO
+    abstract fun localStorageDAO(): LocalStorageDAO
 
     companion object {
         // Singleton prevents multiple instances of database opening at the

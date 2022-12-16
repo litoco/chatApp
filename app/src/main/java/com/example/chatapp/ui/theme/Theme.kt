@@ -10,14 +10,16 @@ private val DarkColorPalette = darkColorScheme(
     primary = NightPrimary,
     secondary = NightPrimaryLight,
     onPrimary = NightText,
-    background = NightBackground
+    background = NightBackground,
+    onBackground = NightPrimaryDark
 )
 
 private val LightColorPalette = lightColorScheme(
     primary = DayPrimary,
     secondary = DayPrimaryLight,
     onPrimary = DayText,
-    background = DayBackground
+    background = DayBackground,
+    onBackground = DayPrimaryDark
 )
 
 @Composable

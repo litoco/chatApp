@@ -16,7 +16,7 @@ class SignInViewModel(application: Application) : AndroidViewModel(application) 
 
     // instantiate the local database
     private val database by lazy { AppDatabase.getDatabase(application) }
-    private val repository by lazy { Repository(database.userDetailsDAO()) }
+    private val repository by lazy { Repository(database.localStorageDAO()) }
 
     fun getUserId() {
         viewModelScope.launch {
