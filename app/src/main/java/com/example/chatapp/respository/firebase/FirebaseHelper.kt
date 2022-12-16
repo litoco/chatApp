@@ -10,6 +10,8 @@ class FirebaseHelper {
 
     private val firebaseFireStore = Firebase.firestore
 
+    fun isSignedIn(): Boolean = Firebase.auth.currentUser != null
+
     fun getUserID() = flow {
 
         emit("Contacting server..")

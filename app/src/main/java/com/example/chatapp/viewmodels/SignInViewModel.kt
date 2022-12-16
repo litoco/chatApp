@@ -10,7 +10,7 @@ import com.example.chatapp.respository.Repository
 import com.example.chatapp.respository.localstorage.AppDatabase
 import kotlinx.coroutines.launch
 
-class AppViewModel(application: Application) : AndroidViewModel(application) {
+class SignInViewModel(application: Application) : AndroidViewModel(application) {
     var displayMessageState by mutableStateOf("Click the button below to start registration")
         private set
 
@@ -26,5 +26,9 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
                 }
             }
         }
+    }
+
+    fun getSignInStatus(): Boolean {
+        return repository.getSignInStatus()
     }
 }

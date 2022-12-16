@@ -34,4 +34,8 @@ class Repository(private val userDetailsDAO: LocalStorageDAO) {
         val newUserId = UserId(0, userId)
         userDetailsDAO.insertUserId(newUserId)
     }
+
+    fun getSignInStatus(): Boolean {
+        return firebaseHelperClass.isSignedIn()
+    }
 }

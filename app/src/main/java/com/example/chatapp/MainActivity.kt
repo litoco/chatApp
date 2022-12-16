@@ -3,32 +3,51 @@ package com.example.chatapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.chatapp.ui.ShowMainScreen
 import com.example.chatapp.ui.ShowUI
-import com.example.chatapp.viewmodels.AppViewModel
+import com.example.chatapp.ui.theme.ChatAppTheme
+import com.example.chatapp.viewmodels.SignInViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MaterialTheme {
-                AppsScreen()
+            ChatAppTheme {
+                SplashScreen()
             }
         }
     }
 }
 
 @Composable
-fun AppsScreen(
+fun SplashScreen(
+    viewModel: SignInViewModel = viewModel()
+) {
+    Surface (
+        modifier = Modifier.fillMaxSize(1f).background(MaterialTheme.colorScheme.background)
+            ) {
+        var isSignedIn by remember{ mutableStateOf(viewModel.getSignInStatus()) }
+        if (isSignedIn){
+            ShowUI()
+        } else {
+            SignInScreen({ isSignedIn = true}, viewModel)
+        }
+    }
+}
+
+@Composable
+fun SignInScreen(
     // UI Data store
-    viewModel: AppViewModel = viewModel()
+    changeSignInStatus: () -> Unit,
+    viewModel: SignInViewModel
 ) {
     var buttonText by rememberSaveable{ mutableStateOf("SignIn") }
     val text = viewModel.displayMessageState
@@ -37,10 +56,8 @@ fun AppsScreen(
         buttonText = "Retry SignIn"
     }
     ShowMainScreen(text = text, buttonText, buttonClickBehaviour)
-    if (text == "Account creation successful"){
-        ShowUI()
+    if (text == "Account creation successful") {
+        changeSignInStatus()
     }
-
-    // There should be a splash screen that will decide if the screen to show will sign in screen or chat screen
 }
 
