@@ -12,6 +12,7 @@ class AllChatsViewModel(application: Application): AndroidViewModel(application)
 
     private val localStorageDAO = AppDatabase.getDatabase(application).localStorageDAO()
     private val repository = Repository(localStorageDAO)
+    private var titleText = "ChatApp"
 
     private var allChatsLists: List<AllChatsModel> = mutableListOf()
 
@@ -24,6 +25,14 @@ class AllChatsViewModel(application: Application): AndroidViewModel(application)
             }
         }
         return allChatsLists
+    }
+
+    fun getCurrentTitle(): String {
+        return titleText
+    }
+
+    fun currentTitle(titleText: String) {
+        this.titleText = titleText
     }
 
 }
