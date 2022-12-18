@@ -50,4 +50,10 @@ class Repository(private val localStorageDAO: LocalStorageDAO) {
         val chatsMetaData = ChatsMetaData(userId = userId, userName = username,  userPic = "", messageMetaData = messageMetaData)
         localStorageDAO.insertChatMetaData(chatsMetaData)
     }
+
+    fun getAllUsersFlow() = flow {
+        firebaseHelperClass.getAllUsersFlow().collect{
+            emit(it)
+        }
+    }
 }

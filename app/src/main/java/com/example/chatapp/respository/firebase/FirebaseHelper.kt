@@ -56,4 +56,20 @@ class FirebaseHelper {
             emit("Failed")
         }
     }
+
+    fun getAllUsersFlow() = flow {
+        val task = firebaseFireStore.collection("users").get()
+        kotlinx.coroutines.withTimeout(5000) {
+            task.await()
+        }
+        if (task.isSuccessful){
+            val usernameList = mutableListOf<String>()
+            for (document in task.result.documents) {
+                if (document.id != Firebase.auth.currentUser?.uid)
+                    usernameList.add(document.id)
+            }
+            emit(usernameList)
+        }
+
+    }
 }
