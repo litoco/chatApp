@@ -36,8 +36,14 @@ class Repository(private val localStorageDAO: LocalStorageDAO) {
         localStorageDAO.insertUserId(newUserId)
     }
 
-    fun getSignInStatus(): Boolean {
-        return firebaseHelperClass.isSignedIn()
+    fun getSignInStatus() = flow {
+        localStorageDAO.getUserId().collect{ userIdFromLocalStorage ->
+            if (userIdFromLocalStorage.isNullOrEmpty()){
+                emit("")
+            } else {
+                emit(userIdFromLocalStorage)
+            }
+        }
     }
 
     fun getAllChatsFlow() = flow {

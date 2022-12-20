@@ -1,6 +1,7 @@
 package com.example.chatapp.viewmodels
 
 import android.app.Application
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -17,6 +18,7 @@ class SignInViewModel(application: Application) : AndroidViewModel(application) 
     // instantiate the local database
     private val database by lazy { AppDatabase.getDatabase(application) }
     private val repository by lazy { Repository(database.localStorageDAO()) }
+    private val anonymousSignInStatus = mutableStateOf("hangOn")
 
     fun getUserId() {
         viewModelScope.launch {
@@ -28,7 +30,16 @@ class SignInViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
-    fun getSignInStatus(): Boolean {
-        return repository.getSignInStatus()
+    fun getSignInStatus(): MutableState<String> {
+        viewModelScope.launch {
+            repository.getSignInStatus().collect{
+                if (it.isNotEmpty()){
+                    anonymousSignInStatus.value = "Success"
+                } else {
+                    anonymousSignInStatus.value = "Failed"
+                }
+            }
+        }
+        return anonymousSignInStatus
     }
 }

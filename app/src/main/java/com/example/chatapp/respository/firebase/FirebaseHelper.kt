@@ -10,8 +10,6 @@ class FirebaseHelper {
 
     private val firebaseFireStore = Firebase.firestore
 
-    fun isSignedIn(): Boolean = Firebase.auth.currentUser != null
-
     fun getUserID() = flow {
 
         emit("Contacting server..")
@@ -62,14 +60,15 @@ class FirebaseHelper {
         kotlinx.coroutines.withTimeout(5000) {
             task.await()
         }
-        if (task.isSuccessful){
-            val usernameList = mutableListOf<String>()
+
+        val usernameList = mutableListOf<String>()
+
+        if (!task.result.metadata.isFromCache){
             for (document in task.result.documents) {
                 if (document.id != Firebase.auth.currentUser?.uid)
                     usernameList.add(document.id)
             }
-            emit(usernameList)
         }
-
+        emit(usernameList)
     }
 }

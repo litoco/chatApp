@@ -1,7 +1,6 @@
 package com.example.chatapp.viewmodels
 
 import android.app.Application
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -16,6 +15,7 @@ class SearchUserViewModel(application: Application): AndroidViewModel(applicatio
     private val repository = Repository(localStorageDAO)
     private var usernameList = mutableStateListOf<String>()
     private var textBoxText = mutableStateOf("Click on the button below to show users")
+    private var clickedUserId = mutableStateOf("")
 
     fun getUserNameList(): SnapshotStateList<String> {
         return usernameList
@@ -36,5 +36,13 @@ class SearchUserViewModel(application: Application): AndroidViewModel(applicatio
 
     fun getTextBoxText(): String {
         return textBoxText.value
+    }
+
+    fun getClickedUserId(): String {
+        return clickedUserId.value
+    }
+
+    fun setClickedUserId(userId: String){
+        clickedUserId.value = userId
     }
 }

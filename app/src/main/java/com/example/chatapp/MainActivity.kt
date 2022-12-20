@@ -36,20 +36,26 @@ fun SplashScreen(
             ) {
         // App logo
         // Progress bar
-        var isSignedIn by remember{ mutableStateOf(viewModel.getSignInStatus()) }
+        val anonymousSignInStatus = viewModel.getSignInStatus()
         // close progress bar
-        if (isSignedIn){
+        if (anonymousSignInStatus.value == "Success"){
             ShowUI()
-        } else {
-            SignInScreen({ isSignedIn = true}, viewModel)
+        } else if (anonymousSignInStatus.value == "Failed") {
+            SignInScreen(
+                {
+                    anonymousSignInStatus.value = it
+                },
+                viewModel
+            )
         }
+
     }
 }
 
 @Composable
 fun SignInScreen(
     // UI Data store
-    changeSignInStatus: () -> Unit,
+    changeSignInStatus: (String) -> Unit,
     viewModel: SignInViewModel
 ) {
     var buttonText by rememberSaveable{ mutableStateOf("SignIn") }
@@ -60,7 +66,7 @@ fun SignInScreen(
     }
     ShowMainScreen(text = text, buttonText, buttonClickBehaviour)
     if (text == "Account creation successful") {
-        changeSignInStatus()
+        changeSignInStatus("Success")
     }
 }
 
