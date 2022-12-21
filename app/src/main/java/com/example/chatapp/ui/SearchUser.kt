@@ -33,11 +33,7 @@ fun RandomlySearchUser(
     ) {
         val userNameList = viewModel.getUserNameList()
         val textBoxText = viewModel.getTextBoxText()
-        val userId = viewModel.getClickedUserId()
 
-        if (userId.isNotEmpty()){
-            ChatScreenUI(userId)
-        }
 
         if (userNameList.size > 0) {
             LazyColumn(modifier = Modifier

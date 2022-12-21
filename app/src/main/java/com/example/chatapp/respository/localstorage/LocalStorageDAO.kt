@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface LocalStorageDAO {
     @Query("SELECT userId FROM UserId")
-    suspend fun getUserId(): Flow<String>
+    fun getUserId(): Flow<String>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUserId(userId: UserId)
